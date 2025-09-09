@@ -1,4 +1,7 @@
-streamlit
-pandas
-pandasai
-openpyxl
+streamlit>=1.25
+pandas>=2.0
+pandasai>=0.4.1
+openai>=1.0
+matplotlib>=3.7
+plotly>=5.16
+python-dotenv>=1.0

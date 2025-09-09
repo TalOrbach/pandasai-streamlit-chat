@@ -9,29 +9,39 @@ st.title("📊 Chat with your CSV/Excel using PandasAI")
 # Sidebar: Select LLM provider
 provider = st.sidebar.selectbox("Choose LLM Provider", ["OpenAI", "OpenRouter"])
 
-# Sidebar: Select model
+# Initialize provider-specific API key and model
+api_key = None
+api_base = None
+model = None
+
 if provider == "OpenAI":
-    api_key = st.secrets["OPENAI_API_KEY"]
+    api_key = st.secrets.get("OPENAI_API_KEY")
+    if not api_key:
+        st.warning("OpenAI key not set. Switch to OpenRouter or provide a key.")
+        st.stop()
     api_base = "https://api.openai.com/v1"
     model = st.sidebar.text_input("Model", "gpt-4")
+
 elif provider == "OpenRouter":
-    api_key = st.secrets["OPENROUTER_API_KEY"]
+    api_key = st.secrets.get("OPENROUTER_API_KEY")
+    if not api_key:
+        st.warning("OpenRouter key not set. Provide a key to use this provider.")
+        st.stop()
     api_base = "https://openrouter.ai/api/v1"
 
-    # Model list with labels
     openrouter_models = {
         "openai/gpt-oss-20b:free": "free",
         "openai/gpt-oss-120b:free": "free",
         "nvidia/llama-3.1-nemotron-ultra-253b-v1:free": "free",
         "qwen/qwen3-coder:free": "free"
     }
-    
+
     model = st.sidebar.selectbox(
         "Model",
         [f"{name} ({label})" for name, label in openrouter_models.items()]
     )
-    # Extract the actual model name for PandasAI
     model = model.split(" ")[0]
+
 else:
     st.error("Unsupported provider")
     st.stop()
